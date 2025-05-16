@@ -7,7 +7,7 @@ const Container = styled(motion.div)`
   position: fixed;
   top: 0;
   font-size: 26px;
-  z-index:1000;
+  z-index:5;
 `
 const Inner = styled.div`
   width: 1200px;  
@@ -73,7 +73,7 @@ function Header() {
   }
   function scrollProjects() {
     window.scroll({
-      top: 1632,
+      top: 1807,
       behavior:"smooth"
     })
   }

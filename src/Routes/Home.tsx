@@ -7,6 +7,8 @@ import { motion, useMotionValueEvent, useScroll } from 'framer-motion';
 import { useState } from 'react';
 import Introduce from '../Components/Introduce';
 import Projects from '../Components/Projects';
+import { useMatch } from 'react-router-dom';
+import Project from './Project';
 
 const Background = styled.div<{bgImg:string}>`
   width: 100vw;
@@ -51,6 +53,7 @@ function Home() {
   let innerHeight = window.innerHeight;
   const [showScrollBtn, setShowScrollBtn] = useState(true)
   const [showToTop, setShowToTop] = useState(false)
+  const match = useMatch('/project/:id')
   const {scrollY} = useScroll();
   useMotionValueEvent(scrollY,'change',(prev)=>{
     console.log(prev);
@@ -59,7 +62,7 @@ function Home() {
     prev >= 300 ? setShowToTop(true) : setShowToTop(false);
   })
   // useMotionValueEvent(scrollY,'change',(prev)=>console.log(prev))
-
+  console.log(match)
   
   /* scrollY > 120 ?
   스크롤Y가 120이 넘으면 
@@ -87,6 +90,11 @@ function Home() {
       <MainSection/>
       <Introduce/>
       <Projects/>
+      { match ? 
+          <Project></Project>
+        :
+          null
+      }
       {
         showScrollBtn ?
         <ScrollBtn
