@@ -1,8 +1,8 @@
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import { ThemeProvider, createGlobalStyle } from 'styled-components';
-import { darkTheme } from './theme';
-import { RecoilRoot } from "recoil"
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import { ThemeProvider, createGlobalStyle } from "styled-components";
+import { darkTheme } from "./theme";
+import { RecoilRoot } from "recoil";
 
 const CreateGlobalStyle = createGlobalStyle`
   html, body, div, span, applet, object, iframe,
@@ -32,8 +32,8 @@ const CreateGlobalStyle = createGlobalStyle`
   }
   body {
   	line-height: 1;
-    background-color: ${(props)=>props.theme.bgColor};
-    color: ${(props)=>props.theme.textColor};
+    background-color: ${(props) => props.theme.bgColor};
+    color: ${(props) => props.theme.textColor};
     overflow-x: hidden;
   }
   ol, ul {
@@ -58,16 +58,14 @@ const CreateGlobalStyle = createGlobalStyle`
     text-decoration: none;
     color: inherit;
   }
-`
+`;
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 
 root.render(
   <RecoilRoot>
     <ThemeProvider theme={darkTheme}>
-      <CreateGlobalStyle/>
+      <CreateGlobalStyle />
       <App />
     </ThemeProvider>
   </RecoilRoot>

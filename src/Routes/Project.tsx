@@ -1,9 +1,9 @@
-import { useNavigate } from "react-router-dom"
-import styled from "styled-components"
-import { AnimatePresence, motion } from 'framer-motion';
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
-const Container = styled(motion.div)`
+const Overlay = styled(motion.div)`
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -13,47 +13,54 @@ const Container = styled(motion.div)`
   top: 0;
   right: 0;
   z-index: 10;
-  background-color: rgba(0,0,0,0.8);
-`
+  background-color: rgba(0, 0, 0, 0.8);
+`;
 const ContentsBox = styled.div`
-  width: 50%;
-  height: 70%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 1150px;
+  height: 700px;
+  padding: 40px 20px;
   position: relative;
-  background-color: ${props=>props.theme.bgColor};
-`
+  background-color: ${(props) => props.theme.bgColor};
+`;
+const Header = styled.div`
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+`;
+const Title = styled.div`
+  font-size: 32px;
+  font-weight: 600;
+`;
+const Description = styled.div`
+  font-size: 18px;
+`;
 const Contents = styled.div`
-  width: 95%;
-  height: 95%;
-`
-const Top = styled.div`
-  height: 60%;
+  padding: 40px 0;
+  height: 550px;
   display: flex;
   justify-content: space-between;
-`
-const TopLeft = styled.div`
-  width: 50%;
+`;
+const ContentLeft = styled.div`
+  width: 710px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-`
+`;
 const Slider = styled.div`
-  width: 360px;
-  height: 220px;
+  width: 100%;
+  height: 100%;
   border: 1px solid white;
   position: relative;
   overflow: hidden;
-`
-const SlideImg = styled(motion.div)<{bgImg:string}>`
-  width:100%;
+`;
+const SlideImg = styled(motion.div)<{ bgImg: string }>`
+  width: 100%;
   height: 100%;
   position: absolute;
-  background-image: ${props=>`url(${props.bgImg})`};
+  background-image: ${(props) => `url(${props.bgImg})`};
   background-size: cover;
   background-position: center center;
-`
+`;
 const Buttons = styled.div`
   padding: 14px 0;
   width: 100%;
@@ -63,63 +70,88 @@ const Buttons = styled.div`
   button {
     width: 30px;
     height: 30px;
-    border:none;
+    border: none;
     border-radius: 50%;
-    color: ${props=>props.theme.textColor};
+    color: ${(props) => props.theme.textColor};
     outline: none;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     &:hover {
-      background-color: rgba(270,270,270,0.2);
+      background-color: rgba(270, 270, 270, 0.2);
     }
   }
   p {
     margin: 0 16px;
   }
-`
-const PrevBtn = styled.button``
-const NextBtn = styled.button``
-const TopRight = styled.div`
-  padding-left: 24px;
-  padding-bottom: 55px;
-  width: 50%;
+`;
+const PrevBtn = styled.button``;
+const NextBtn = styled.button``;
+const ContentRight = styled.div`
+  padding-left: 20px;
+  width: 400px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   position: relative;
-`
-const Title = styled.div`
-  font-size: 32px;
-  font-weight: 600;
-  margin-bottom: 24px;
-`
-const Description = styled.div`
-  font-size: 18px;
-  margin-bottom: 24px;
-`
+`;
 const Skills = styled.div`
+  margin-bottom: 40px;
   p {
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 16px;
   }
-`
+`;
 const Icons = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-`
-const Icon = styled.div<{bgImg:string}>`
+`;
+const Icon = styled.div<{ bgImg: string }>`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-image: ${props=>`url(${props.bgImg})`};
+  background-image: ${(props) => `url(${props.bgImg})`};
   background-size: cover;
   background-position: center;
-`
+`;
+const Detail = styled.div``;
+const DetailTitle = styled.div`
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-weight: 600;
+`;
+const DetailText = styled.div`
+  margin-bottom: 10px;
+  padding: 8px 16px;
+  height: 270px;
+  border: 1px solid white;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: scroll;
+
+  p {
+    font-size: 18px;
+  }
+`;
+const Text = styled.div`
+  display: flex;
+`;
+const TextMark = styled.span`
+  width: 30px;
+  margin-right: 4px;
+`;
+const TextContent = styled.span``;
 const Links = styled.div`
+  margin: 0 auto;
   display: flex;
   justify-content: center;
   gap: 50px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 40px;
+
   a {
     padding: 10px 0;
     width: 120px;
@@ -127,31 +159,14 @@ const Links = styled.div`
     font-size: 14px;
     text-align: center;
     border-radius: 20px;
-    background-color: ${props=>props.theme.blackColor.dark};
+    background-color: ${(props) => props.theme.blackColor.dark};
     &:hover {
-      color: ${props=>props.theme.pointColor};
+      color: ${(props) => props.theme.pointColor};
     }
   }
-`
-const GithubLink = styled.a`
-`
-const SiteLink = styled.a`
-  `
-const Bottom = styled.div`
-`
-const BottomTitle = styled.div`
-  margin-bottom: 10px;
-  font-size: 20px;
-  font-weight: 600;
-`
-const BottomText = styled.div`
-  margin-bottom: 10px;
-  padding: 8px 16px;
-  height: 110px;
-  border: 1px solid white;
-  border-radius: 8px;
-  overflow-y: scroll;
-`
+`;
+const GithubLink = styled.a``;
+const SiteLink = styled.a``;
 
 const CloseBtn = styled.div`
   width: 50px;
@@ -162,26 +177,27 @@ const CloseBtn = styled.div`
   right: -10px;
   font-size: 36px;
   z-index: 10;
-`
+`;
 
 const slideBoxVariant = {
-  start: (isReverse:boolean)=>({
-    x: isReverse ? -360 : 360
+  start: (isReverse: boolean) => ({
+    x: isReverse ? -710 : 710,
   }),
-  end:{
-    x:0
+  end: {
+    x: 0,
   },
-  exit:(isReverse:boolean)=>({
-    x: isReverse ? 360 : -360
+  exit: (isReverse: boolean) => ({
+    x: isReverse ? 710 : -710,
   }),
-}
+};
 
 function Project() {
-  const navigate = useNavigate()
-  const [index,setIndex] = useState(1)
-  const [isReverse,setIsReverse] = useState(false)
-  const [isSliding,setIsSliding] = useState(false)
-  
+  const navigate = useNavigate();
+  const [index, setIndex] = useState(1);
+  const [isReverse, setIsReverse] = useState(false);
+  const [isSliding, setIsSliding] = useState(false);
+
+  // 모달창이 띄워져있을때, 모달창 뒤의 배경화면이 스크롤되는것을 방지하는 코드
   useEffect(() => {
     document.body.style.cssText = `
       position: fixed; 
@@ -195,98 +211,136 @@ function Project() {
     };
   }, []);
 
-  let arr = [1,2,3,4,5,6]
+  let arr = [1, 2, 3, 4, 5, 6];
 
-  function moveBack () {
-    navigate(-1)
+  function moveBack() {
+    navigate(-1);
   }
-  function increaseIndex(){
-    if(isSliding) {
+  function increaseIndex() {
+    if (isSliding) {
       return;
     } else {
-      setIsSliding(true)
-      setIsReverse(false)
-      setIndex(index=>index===6? 1 : index+1)
+      setIsSliding(true);
+      setIsReverse(false);
+      setIndex((index) => (index === 6 ? 1 : index + 1));
     }
   }
-  function decreaseIndex(){
-    if(isSliding) return;
-    setIsSliding(true)
-    setIsReverse(true)
-    setIndex(index=>index===1? 6 : index-1)
+  function decreaseIndex() {
+    if (isSliding) return;
+    setIsSliding(true);
+    setIsReverse(true);
+    setIndex((index) => (index === 1 ? 6 : index - 1));
   }
 
-
   return (
-    <Container>
+    <Overlay>
       <ContentsBox>
+        <Header>
+          <Title>유튜브 클론코딩</Title>
+          <Description>(JS를 활용하여 Youtube 플랫폼을 만들어보기)</Description>
+        </Header>
+
         <Contents>
-          <Top>
-            <TopLeft>
-              <Slider>
-                <AnimatePresence initial={false} onExitComplete={()=>{setIsSliding(false)}} custom={isReverse}>
-                  {arr.map((item)=>(
-                    item===index ?
-                      <SlideImg 
-                        custom={isReverse}
-                        variants={slideBoxVariant}
-                        initial="start"
-                        animate="end"
-                        exit="exit"
-                        transition={{type:"tween", duration:1}}
-                        bgImg={`${process.env.PUBLIC_URL}/images/${index}.png`} 
-                        key={index}
-                      >
-                      </SlideImg>:
-                        null
-                      ))}
-                  </AnimatePresence> 
-                </Slider> 
-              <Buttons>
-                <PrevBtn onClick={decreaseIndex}>&larr;</PrevBtn>
-                <p>{index}/6</p>
-                <NextBtn onClick={increaseIndex}>&rarr;</NextBtn>
-              </Buttons>
-            </TopLeft>
-            <TopRight>
-              <Title>유튜브 클론코딩</Title>
-              <Description>JS를 활용하여 Youtube 플랫폼을 만들어보기</Description>
-              <Skills>
-                <p>Skills</p>
-                <Icons>
-                  <Icon bgImg={`${process.env.PUBLIC_URL}/images/js.png`}></Icon>
-                  <Icon bgImg={`${process.env.PUBLIC_URL}/images/js.png`}></Icon>
-                  <Icon bgImg={`${process.env.PUBLIC_URL}/images/js.png`}></Icon>
-                  <Icon bgImg={`${process.env.PUBLIC_URL}/images/js.png`}></Icon>
-                  <Icon bgImg={`${process.env.PUBLIC_URL}/images/js.png`}></Icon>
-                  <Icon bgImg={`${process.env.PUBLIC_URL}/images/js.png`}></Icon>
-                </Icons>
-              </Skills>
-            </TopRight>
-          </Top>
-          <Bottom>
-            <BottomTitle>주요기능</BottomTitle>
-            <BottomText>
-              <p>1.아 졸라 만들기 귀찮다. 어떡하지</p>
-              <p>2.집에가서 맛있는거 먹으면서 웹툰보고싶당..</p>
-              <p>3.배그도 한판 하고 싶다 너무 졸려 그리고ㅠㅠ</p>
-              <p>4.한로로무대 또 보고싶다 이번에 펜타포트온다는데</p>
-              <p>5.진짜 무조건 티켓팅한다 그러니까 이제 절약시작이다!</p>
-              <p>6.흠캬캬캬캬캬캬ㅑㅋㅋ캬!</p>
-            </BottomText>
-            <Links>
-                <GithubLink>Github ↗</GithubLink>
-                <SiteLink>Project ↗</SiteLink>
-              </Links>
-          </Bottom>
+          <ContentLeft>
+            <Slider>
+              <AnimatePresence
+                initial={false}
+                onExitComplete={() => {
+                  setIsSliding(false);
+                }}
+                custom={isReverse}
+              >
+                {arr.map((item) =>
+                  item === index ? (
+                    <SlideImg
+                      custom={isReverse}
+                      variants={slideBoxVariant}
+                      initial="start"
+                      animate="end"
+                      exit="exit"
+                      transition={{ type: "tween", duration: 1 }}
+                      bgImg={`${process.env.PUBLIC_URL}/images/${index}.png`}
+                      key={index}
+                    ></SlideImg>
+                  ) : null
+                )}
+              </AnimatePresence>
+            </Slider>
+            <Buttons>
+              <PrevBtn onClick={decreaseIndex}>&larr;</PrevBtn>
+              <p>{index}/6</p>
+              <NextBtn onClick={increaseIndex}>&rarr;</NextBtn>
+            </Buttons>
+          </ContentLeft>
+          <ContentRight>
+            <Skills>
+              <p>Skills</p>
+              <Icons>
+                <Icon bgImg={`${process.env.PUBLIC_URL}/images/js.png`}></Icon>
+                <Icon bgImg={`${process.env.PUBLIC_URL}/images/js.png`}></Icon>
+                <Icon bgImg={`${process.env.PUBLIC_URL}/images/js.png`}></Icon>
+                <Icon bgImg={`${process.env.PUBLIC_URL}/images/js.png`}></Icon>
+                <Icon bgImg={`${process.env.PUBLIC_URL}/images/js.png`}></Icon>
+                <Icon bgImg={`${process.env.PUBLIC_URL}/images/js.png`}></Icon>
+              </Icons>
+            </Skills>
+            <Detail>
+              <DetailTitle>주요기능</DetailTitle>
+              <DetailText>
+                <Text>
+                  <TextMark>✅</TextMark>
+                  <TextContent>
+                    가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하
+                  </TextContent>
+                </Text>
+                <Text>
+                  <TextMark>✅</TextMark>
+                  <TextContent>
+                    가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하
+                  </TextContent>
+                </Text>
+                <Text>
+                  <TextMark>✅</TextMark>
+                  <TextContent>
+                    가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하
+                  </TextContent>
+                </Text>
+                <Text>
+                  <TextMark>✅</TextMark>
+                  <TextContent>
+                    가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하
+                  </TextContent>
+                </Text>
+                <Text>
+                  <TextMark>✅</TextMark>
+                  <TextContent>
+                    가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하
+                  </TextContent>
+                </Text>
+                <Text>
+                  <TextMark>✅</TextMark>
+                  <TextContent>
+                    가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하
+                  </TextContent>
+                </Text>
+                <Text>
+                  <TextMark>✅</TextMark>
+                  <TextContent>
+                    가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하
+                  </TextContent>
+                </Text>
+              </DetailText>
+            </Detail>
+          </ContentRight>
+          <Links>
+            <GithubLink>Github ↗</GithubLink>
+            <SiteLink>Project ↗</SiteLink>
+          </Links>
         </Contents>
-        <CloseBtn onClick={moveBack}>
-        ×
-        </CloseBtn>
+        <CloseBtn onClick={moveBack}>×</CloseBtn>
       </ContentsBox>
-      
-    </Container>
-  )
+    </Overlay>
+  );
 }
 
-export default Project
+export default Project;
