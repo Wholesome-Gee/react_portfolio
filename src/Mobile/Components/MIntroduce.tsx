@@ -8,9 +8,9 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   background-color: ${(props) => props.theme.bgColor};
+  overflow: hidden;
 `;
 const Inner = styled.div`
-  width: 1200px;
   display: flex;
   flex-direction: column;
 `;
@@ -154,7 +154,7 @@ const Text = styled.div`
   }
 `;
 
-function Introduce() {
+function MIntroduce() {
   return (
     <Container>
       <Inner>
@@ -311,4 +311,4 @@ function Introduce() {
   );
 }
 
-export default Introduce;
+export default MIntroduce;

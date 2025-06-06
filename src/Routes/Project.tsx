@@ -1,7 +1,9 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { IProject, projectsState } from "../atoms";
+import { useRecoilValue } from "recoil";
 
 const Overlay = styled(motion.div)`
   width: 100vw;
@@ -12,7 +14,7 @@ const Overlay = styled(motion.div)`
   position: fixed;
   top: 0;
   right: 0;
-  z-index: 10;
+  z-slidenum: 10;
   background-color: rgba(0, 0, 0, 0.8);
 `;
 const ContentsBox = styled.div`
@@ -112,6 +114,7 @@ const Icon = styled.div<{ bgImg: string }>`
   background-image: ${(props) => `url(${props.bgImg})`};
   background-size: cover;
   background-position: center;
+  background-color: ${(props) => props.theme.textColor};
 `;
 const Detail = styled.div``;
 const DetailTitle = styled.div`
@@ -129,13 +132,26 @@ const DetailText = styled.div`
   flex-direction: column;
   gap: 16px;
   overflow-y: scroll;
+  &::-webkit-scrollbar {
+    width: 20px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 10px;
 
+    border: 7px solid rgba(0, 0, 0, 0.8);
+  }
+  &::-webkit-scrollbar-track {
+    background: transpl; /* 스크롤바 뒷 배경 색상 */
+  }
+  background-color: rgba(0, 0, 0, 0);
   p {
     font-size: 18px;
   }
 `;
 const Text = styled.div`
   display: flex;
+  line-height: 20px;
 `;
 const TextMark = styled.span`
   width: 30px;
@@ -191,9 +207,16 @@ const slideBoxVariant = {
   }),
 };
 
+interface IProps {
+  project: IProject;
+}
+
 function Project() {
+  const { id } = useParams();
+  const project = useRecoilValue(projectsState).find((item) => item.id === id);
+  console.log(project);
   const navigate = useNavigate();
-  const [index, setIndex] = useState(1);
+  const [slideNum, setSlideNum] = useState(1);
   const [isReverse, setIsReverse] = useState(false);
   const [isSliding, setIsSliding] = useState(false);
 
@@ -204,14 +227,23 @@ function Project() {
       top: -${window.scrollY}px;
       overflow-y: scroll;
       width: 100%;`;
+
     return () => {
       const scrollY = document.body.style.top;
       document.body.style.cssText = "";
       window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
     };
   }, []);
-
-  let arr = [1, 2, 3, 4, 5, 6];
+  useEffect(() => {
+    const autoSlide = setInterval(() => {
+      if (!project) return;
+      setIsReverse(false);
+      setSlideNum((prev) => (prev === project.images.length ? 1 : prev + 1));
+    }, 4000);
+    return () => {
+      clearInterval(autoSlide);
+    };
+  }, [slideNum]);
 
   function moveBack() {
     navigate(-1);
@@ -222,22 +254,22 @@ function Project() {
     } else {
       setIsSliding(true);
       setIsReverse(false);
-      setIndex((index) => (index === 6 ? 1 : index + 1));
+      setSlideNum((slideNum) => (slideNum === 6 ? 1 : slideNum + 1));
     }
   }
   function decreaseIndex() {
     if (isSliding) return;
     setIsSliding(true);
     setIsReverse(true);
-    setIndex((index) => (index === 1 ? 6 : index - 1));
+    setSlideNum((slideNum) => (slideNum === 1 ? 6 : slideNum - 1));
   }
 
   return (
     <Overlay>
       <ContentsBox>
         <Header>
-          <Title>유튜브 클론코딩</Title>
-          <Description>(JS를 활용하여 Youtube 플랫폼을 만들어보기)</Description>
+          <Title>{project?.title}</Title>
+          <Description>({project?.description})</Description>
         </Header>
 
         <Contents>
@@ -250,8 +282,8 @@ function Project() {
                 }}
                 custom={isReverse}
               >
-                {arr.map((item) =>
-                  item === index ? (
+                {project?.images.map((item) =>
+                  item === slideNum ? (
                     <SlideImg
                       custom={isReverse}
                       variants={slideBoxVariant}
@@ -259,8 +291,8 @@ function Project() {
                       animate="end"
                       exit="exit"
                       transition={{ type: "tween", duration: 1 }}
-                      bgImg={`${process.env.PUBLIC_URL}/images/${index}.png`}
-                      key={index}
+                      bgImg={`${process.env.PUBLIC_URL}/images/${project.id}/image${slideNum}.png`}
+                      key={slideNum}
                     ></SlideImg>
                   ) : null
                 )}
@@ -268,7 +300,9 @@ function Project() {
             </Slider>
             <Buttons>
               <PrevBtn onClick={decreaseIndex}>&larr;</PrevBtn>
-              <p>{index}/6</p>
+              <p>
+                {slideNum}/{project?.images.length}
+              </p>
               <NextBtn onClick={increaseIndex}>&rarr;</NextBtn>
             </Buttons>
           </ContentLeft>
@@ -276,65 +310,30 @@ function Project() {
             <Skills>
               <p>Skills</p>
               <Icons>
-                <Icon bgImg={`${process.env.PUBLIC_URL}/images/js.png`}></Icon>
-                <Icon bgImg={`${process.env.PUBLIC_URL}/images/js.png`}></Icon>
-                <Icon bgImg={`${process.env.PUBLIC_URL}/images/js.png`}></Icon>
-                <Icon bgImg={`${process.env.PUBLIC_URL}/images/js.png`}></Icon>
-                <Icon bgImg={`${process.env.PUBLIC_URL}/images/js.png`}></Icon>
-                <Icon bgImg={`${process.env.PUBLIC_URL}/images/js.png`}></Icon>
+                {project?.skills.map((item) => (
+                  <Icon bgImg={`${process.env.PUBLIC_URL}/images/skills/${item}.png`} key={item}></Icon>
+                ))}
               </Icons>
             </Skills>
             <Detail>
               <DetailTitle>주요기능</DetailTitle>
               <DetailText>
-                <Text>
-                  <TextMark>✅</TextMark>
-                  <TextContent>
-                    가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하
-                  </TextContent>
-                </Text>
-                <Text>
-                  <TextMark>✅</TextMark>
-                  <TextContent>
-                    가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하
-                  </TextContent>
-                </Text>
-                <Text>
-                  <TextMark>✅</TextMark>
-                  <TextContent>
-                    가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하
-                  </TextContent>
-                </Text>
-                <Text>
-                  <TextMark>✅</TextMark>
-                  <TextContent>
-                    가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하
-                  </TextContent>
-                </Text>
-                <Text>
-                  <TextMark>✅</TextMark>
-                  <TextContent>
-                    가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하
-                  </TextContent>
-                </Text>
-                <Text>
-                  <TextMark>✅</TextMark>
-                  <TextContent>
-                    가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하
-                  </TextContent>
-                </Text>
-                <Text>
-                  <TextMark>✅</TextMark>
-                  <TextContent>
-                    가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하가나다라마바사아자차카타파하
-                  </TextContent>
-                </Text>
+                {project?.options.map((option) => (
+                  <Text key={option}>
+                    <TextMark>✅</TextMark>
+                    <TextContent>{option}</TextContent>
+                  </Text>
+                ))}
               </DetailText>
             </Detail>
           </ContentRight>
           <Links>
-            <GithubLink>Github ↗</GithubLink>
-            <SiteLink>Project ↗</SiteLink>
+            <GithubLink href={project?.github} target="blank">
+              Github ↗
+            </GithubLink>
+            <SiteLink href={project?.domain} target="blank">
+              Project ↗
+            </SiteLink>
           </Links>
         </Contents>
         <CloseBtn onClick={moveBack}>×</CloseBtn>

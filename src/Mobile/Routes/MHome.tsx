@@ -1,32 +1,34 @@
-import Header from "../Components/Header";
 import styled from "styled-components";
-import MainSection from "../Components/MainSection";
+import { motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import MMainSection from "../Components/MMainSection";
+import { useMatch } from "react-router-dom";
+import MHeader from "../Components/MHeader";
 import { FaAngleDoubleDown } from "react-icons/fa";
 import { GrLinkTop } from "react-icons/gr";
-import { motion, useMotionValueEvent, useScroll } from "framer-motion";
-import { useState } from "react";
-import Introduce from "../Components/Introduce";
-import Projects from "../Components/Projects";
-import { useMatch } from "react-router-dom";
-import Project from "./Project";
+import MIntroduce from "../Components/MIntroduce";
 
+const Container = styled.div`
+  width: 100vw;
+  height: 300vh;
+`;
 const Background = styled.div<{ img: string }>`
   width: 100vw;
   height: 100vh;
   background-image: linear-gradient(rgba(40, 44, 52, 0), rgba(40, 44, 52, 0.5), rgba(40, 44, 52, 1)),
     url(${(props) => props.img});
   background-size: cover;
-  background-position: center;
+  background-position: center center;
   position: fixed;
   z-index: -5;
 `;
-const ScrollBtn = styled(motion.div)<{ height: number }>`
+const ScrollBtn = styled(motion.div)`
   width: 120px;
   margin: 0 auto;
   padding: 8px 0;
   text-align: center;
   position: absolute;
-  top: ${(props) => props.height - 100}px;
+  top: 0;
   left: 0;
   right: 0;
   cursor: pointer;
@@ -50,31 +52,25 @@ const ToTop = styled.div`
   }
 `;
 
-function Home() {
-  let height = window.innerHeight;
+function MHome() {
+  const height = window.innerHeight;
+  const mainSection = useRef<HTMLDivElement>(null);
+  const [mainSectionHeight, setMainSectionHeight] = useState(0);
   const [showScrollBtn, setShowScrollBtn] = useState(true);
   const [showToTop, setShowToTop] = useState(false);
   const match = useMatch("/project/:id");
   const { scrollY } = useScroll();
   useMotionValueEvent(scrollY, "change", (prev) => {
-    // console.log(prev);
+    console.log(prev);
 
-    prev > 60 ? setShowScrollBtn(false) : setShowScrollBtn(true);
+    prev > 100 ? setShowScrollBtn(false) : setShowScrollBtn(true);
     prev >= 300 ? setShowToTop(true) : setShowToTop(false);
   });
-  // useMotionValueEvent(scrollY,'change',(prev)=>console.log(prev))
-  // console.log(match);
-
-  /* scrollY > 120 ?
-  스크롤Y가 120이 넘으면 
-  scrollbtn display:none
-  사라지는데 애니메이션
-  632로 이동
-  */
+  useMotionValueEvent(scrollY, "change", (prev) => console.log(prev));
 
   function handleClickScrollBtn() {
     window.scroll({
-      top: height,
+      top: mainSectionHeight - 80,
       behavior: "smooth",
     });
   }
@@ -84,14 +80,21 @@ function Home() {
       behavior: "smooth",
     });
   }
+
+  useEffect(() => {
+    if (mainSection.current) {
+      setMainSectionHeight(mainSection.current.offsetHeight);
+    }
+  }, []);
+  console.log("@", mainSectionHeight);
   return (
-    <div>
-      <Header></Header>
+    <Container>
+      <MHeader />
       <Background img={`${process.env.PUBLIC_URL}/images/bgImg.jpg`}></Background>
-      <MainSection />
-      <Introduce />
-      <Projects />
-      {match ? <Project></Project> : null}
+      <MMainSection ref={mainSection} />
+      <MIntroduce />
+      {/* <Projects />*/}
+      {/* {match ? <Project></Project> : null} */}
       {showScrollBtn ? (
         <ScrollBtn
           initial={{ top: height - 100, opacity: 1 }}
@@ -99,11 +102,9 @@ function Home() {
             top: [height - 100, height - 80, height - 100],
             transition: { type: "linear", duration: 2, repeat: Infinity },
           }}
-          whileHover={{ opacity: 0.5, transition: { duration: 0.2 } }}
-          height={height}
           onClick={handleClickScrollBtn}
         >
-          <p style={{ marginBottom: "4px" }}>click to scroll</p>
+          <p style={{ marginBottom: "4px" }}>tap to scroll</p>
           <FaAngleDoubleDown fontSize={"32px"}></FaAngleDoubleDown>
         </ScrollBtn>
       ) : null}
@@ -112,8 +113,8 @@ function Home() {
           <GrLinkTop />
         </ToTop>
       ) : null}
-    </div>
+    </Container>
   );
 }
 
-export default Home;
+export default MHome;

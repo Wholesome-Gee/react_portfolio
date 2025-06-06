@@ -113,9 +113,9 @@ function Header() {
             >
               Projects
             </motion.li>
-            <motion.li variants={liVariant} initial="start" whileHover="hover" style={{ cursor: "pointer" }}>
+            {/* <motion.li variants={liVariant} initial="start" whileHover="hover" style={{ cursor: "pointer" }}>
               More
-            </motion.li>
+            </motion.li> */}
           </ul>
         </Column>
         <Column></Column>

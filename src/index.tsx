@@ -3,6 +3,7 @@ import App from "./App";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
 import { darkTheme } from "./theme";
 import { RecoilRoot } from "recoil";
+import { Helmet } from "react-helmet";
 
 const CreateGlobalStyle = createGlobalStyle`
   html, body, div, span, applet, object, iframe,
@@ -66,6 +67,9 @@ root.render(
   <RecoilRoot>
     <ThemeProvider theme={darkTheme}>
       <CreateGlobalStyle />
+      <Helmet>
+        <title>WholesomeGee's Portfolio</title>
+      </Helmet>
       <App />
     </ThemeProvider>
   </RecoilRoot>

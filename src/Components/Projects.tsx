@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
+import { projectsState } from "../atoms";
 
 const Container = styled.div`
   padding: 200px 0;
@@ -8,7 +10,6 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   background-color: ${(props) => props.theme.bgColor};
-  background-color: teal;
 `;
 const Inner = styled.div`
   width: 1200px;
@@ -34,6 +35,7 @@ const Project = styled.div`
   img {
     width: 350px;
     height: 200px;
+    transition: all 0.2s ease-in-out;
   }
   p {
     width: 350px;
@@ -42,39 +44,29 @@ const Project = styled.div`
     font-weight: 600;
     text-align: center;
   }
+  &:hover img {
+    transform: scale(1.05) translateY(-10px);
+  }
 `;
+
 function Projects() {
+  const projects = useRecoilValue(projectsState);
+
   return (
     <Container>
       <Inner>
         <Title>Projects</Title>
         <ProjectBox>
-          <Link to={"/project/:id"}>
-            <Project>
-              <img src={`${process.env.PUBLIC_URL}/images/youtube.png`} alt="" />
-              <p>YOUTUBE 클론코딩</p>
-            </Project>
-          </Link>
-          <Project>
-            <img src={`${process.env.PUBLIC_URL}/images/youtube.png`} alt="" />
-            <p>YOUTUBE 클론코딩</p>
-          </Project>
-          <Project>
-            <img src={`${process.env.PUBLIC_URL}/images/youtube.png`} alt="" />
-            <p>YOUTUBE 클론코딩</p>
-          </Project>
-          <Project>
-            <img src={`${process.env.PUBLIC_URL}/images/youtube.png`} alt="" />
-            <p>YOUTUBE 클론코딩</p>
-          </Project>
-          <Project>
-            <img src={`${process.env.PUBLIC_URL}/images/youtube.png`} alt="" />
-            <p>YOUTUBE 클론코딩</p>
-          </Project>
-          <Project>
-            <img src={`${process.env.PUBLIC_URL}/images/youtube.png`} alt="" />
-            <p>YOUTUBE 클론코딩</p>
-          </Project>
+          {projects.map((project) => {
+            return (
+              <Link to={`/project/${project.id}`} key={project.id}>
+                <Project>
+                  <img src={`${process.env.PUBLIC_URL}/images/${project.id}/image1.png`} alt="" />
+                  <p>{project.title}</p>
+                </Project>
+              </Link>
+            );
+          })}
         </ProjectBox>
       </Inner>
     </Container>
