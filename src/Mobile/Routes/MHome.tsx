@@ -2,15 +2,16 @@ import styled from "styled-components";
 import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import MMainSection from "../Components/MMainSection";
-import { useMatch } from "react-router-dom";
+import { Outlet, useMatch } from "react-router-dom";
 import MHeader from "../Components/MHeader";
 import { FaAngleDoubleDown } from "react-icons/fa";
 import { GrLinkTop } from "react-icons/gr";
 import MIntroduce from "../Components/MIntroduce";
+import MProjects from "../Components/MProjects";
+import MProject from "./MProject";
 
 const Container = styled.div`
   width: 100vw;
-  height: 300vh;
 `;
 const Background = styled.div<{ img: string }>`
   width: 100vw;
@@ -55,18 +56,19 @@ const ToTop = styled.div`
 function MHome() {
   const height = window.innerHeight;
   const mainSection = useRef<HTMLDivElement>(null);
+  const introduceSection = useRef<HTMLDivElement>(null);
   const [mainSectionHeight, setMainSectionHeight] = useState(0);
+  const [introduceSectionHeight, setIntroduceSectionHeight] = useState(0);
   const [showScrollBtn, setShowScrollBtn] = useState(true);
   const [showToTop, setShowToTop] = useState(false);
   const match = useMatch("/project/:id");
+
   const { scrollY } = useScroll();
   useMotionValueEvent(scrollY, "change", (prev) => {
-    console.log(prev);
-
     prev > 100 ? setShowScrollBtn(false) : setShowScrollBtn(true);
     prev >= 300 ? setShowToTop(true) : setShowToTop(false);
   });
-  useMotionValueEvent(scrollY, "change", (prev) => console.log(prev));
+  // useMotionValueEvent(scrollY, "change", (prev) => console.log(prev));
 
   function handleClickScrollBtn() {
     window.scroll({
@@ -85,16 +87,19 @@ function MHome() {
     if (mainSection.current) {
       setMainSectionHeight(mainSection.current.offsetHeight);
     }
+    if (introduceSection.current) {
+      setIntroduceSectionHeight(introduceSection.current.offsetHeight);
+    }
   }, []);
   console.log("@", mainSectionHeight);
   return (
     <Container>
-      <MHeader />
+      <MHeader mainSectionHeight={mainSectionHeight} introduceSectionHeight={introduceSectionHeight} />
       <Background img={`${process.env.PUBLIC_URL}/images/bgImg.jpg`}></Background>
       <MMainSection ref={mainSection} />
-      <MIntroduce />
-      {/* <Projects />*/}
-      {/* {match ? <Project></Project> : null} */}
+      <MIntroduce ref={introduceSection} />
+      <MProjects />
+      {match ? <MProject /> : null}
       {showScrollBtn ? (
         <ScrollBtn
           initial={{ top: height - 100, opacity: 1 }}

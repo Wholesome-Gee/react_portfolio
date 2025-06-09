@@ -65,13 +65,6 @@ function Home() {
   // useMotionValueEvent(scrollY,'change',(prev)=>console.log(prev))
   // console.log(match);
 
-  /* scrollY > 120 ?
-  스크롤Y가 120이 넘으면 
-  scrollbtn display:none
-  사라지는데 애니메이션
-  632로 이동
-  */
-
   function handleClickScrollBtn() {
     window.scroll({
       top: height,

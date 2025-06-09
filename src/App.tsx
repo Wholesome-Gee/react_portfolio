@@ -1,9 +1,10 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./Routes/Home";
-import Project from "./Routes/Project";
 import { useMediaQuery } from "react-responsive";
 import { useEffect, useState } from "react";
 import MHome from "./Mobile/Routes/MHome";
+import MProject from "./Mobile/Routes/MProject";
+import Project from "./Routes/Project";
 
 function App() {
   const [width, setWidth] = useState(window.innerWidth);
@@ -18,11 +19,12 @@ function App() {
   });
   const isTablete = useMediaQuery({ query: "(max-width: 1220px)" });
   const isMobile = useMediaQuery({ query: "(max-width:768px)" });
+  console.log(isDesktop);
   return (
     <BrowserRouter>
       <Routes>
         <Route path={"/"} element={isDesktop ? <Home /> : <MHome />}>
-          <Route path={"/project/:id"} element={<Project />}></Route>
+          <Route path={"project/:id"} element={isDesktop ? <Project /> : <MProject />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>

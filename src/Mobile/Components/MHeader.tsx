@@ -18,11 +18,13 @@ const Container = styled(motion.div)`
   font-weight: 600;
   z-index: 10;
   div {
-    width: 32%;
+    width: 33%;
   }
-  background-color: ${(props) => props.theme.bgColor};
+  background-color: ${(props) => props.theme.blackColor.dark};
 `;
-const Logo = styled.div``;
+const Logo = styled.div`
+  text-align: center;
+`;
 const Menu = styled.div`
   text-align: right;
 `;
@@ -37,7 +39,7 @@ const NavBox = styled(motion.div)`
   gap: 30px;
   position: fixed;
   z-index: 5;
-  background-color: ${(props) => props.theme.bgColor};
+  background-color: ${(props) => props.theme.blackColor.dark};
   div {
     width: 50%;
     font-size: 1.2rem;
@@ -51,8 +53,25 @@ const navBoxVariant = {
   end: { y: 0 },
   exit: { y: -130 },
 };
-function MHeader() {
+
+interface IProps {
+  mainSectionHeight: number;
+  introduceSectionHeight: number;
+}
+function MHeader({ mainSectionHeight, introduceSectionHeight }: IProps) {
   const [showNavBox, setShowNavBox] = useState(false);
+  function handleClickIntroduce() {
+    window.scroll({
+      top: mainSectionHeight - 80,
+      behavior: "smooth",
+    });
+  }
+  function handleClickProjects() {
+    window.scroll({
+      top: mainSectionHeight + introduceSectionHeight - 80,
+      behavior: "smooth",
+    });
+  }
   return (
     <>
       <Container>
@@ -76,8 +95,8 @@ function MHeader() {
             exit="exit"
             transition={{ type: "tween", duration: 0.5 }}
           >
-            <div>Introduce</div>
-            <div>Projects</div>
+            <div onClick={handleClickIntroduce}>Introduce</div>
+            <div onClick={handleClickProjects}>Projects</div>
           </NavBox>
         ) : null}
       </AnimatePresence>

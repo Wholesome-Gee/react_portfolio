@@ -6,12 +6,11 @@ const Container = styled.div`
   padding-top: 80px;
   margin: 0 auto;
   width: 90%;
-  height: 70vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
   p {
     font-size: 1.5rem;
   }
@@ -33,7 +32,7 @@ const Mention = styled(motion.div)`
   top: -60;
 `;
 
-// 부모컴포넌트(MHome.tsx)에서 MMainSection컴포넌트를 useRef로 지정하기위해서 forwardRef를 적용한 후, Container에 ref={ref}를 적용
+// 부모컴포넌트(MHome.tsx)에서 MMainSection컴포넌트를 useRef로 지정하기위해서 forwardRef<HTMLDivElement>((props, ref)를 적용한 후, Container에 ref={ref}를 적용
 const MMainSection = forwardRef<HTMLDivElement>((props, ref) => {
   const [index, setIndex] = useState(0);
   let mentions = ["근면성실한 Front-End 개발자", "소통이 원활한 Front-End 개발자", "열정적인 Front-End 개발자"];

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 const Container = styled(motion.div)`
   width: 100vw;
+  height: 80px;
   position: fixed;
   top: 0;
   font-size: 26px;
