@@ -17,8 +17,6 @@ function App() {
   const isDesktop = useMediaQuery({
     query: "(min-width: 1220px)",
   });
-  const isTablete = useMediaQuery({ query: "(max-width: 1220px)" });
-  const isMobile = useMediaQuery({ query: "(max-width:768px)" });
   console.log(isDesktop);
   return (
     <BrowserRouter basename={process.env.PUBLIC_URL}>

@@ -13,7 +13,7 @@ const Container = styled.div`
 `;
 const Inner = styled.div`
   width: 1200px;
-  height: 650px;
+  height: auto;
   display: flex;
   flex-direction: column;
   background-color: ${(props) => props.theme.bgColor};
@@ -25,13 +25,11 @@ const Title = styled.div`
 const ProjectBox = styled.div`
   padding-top: 40px;
   width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
 `;
 const Project = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   img {
     width: 350px;
     height: 200px;
