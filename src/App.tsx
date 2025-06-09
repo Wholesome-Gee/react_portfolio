@@ -21,7 +21,7 @@ function App() {
   const isMobile = useMediaQuery({ query: "(max-width:768px)" });
   console.log(isDesktop);
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Routes>
         <Route path={"/"} element={isDesktop ? <Home /> : <MHome />}>
           <Route path={"project/:id"} element={isDesktop ? <Project /> : <MProject />}></Route>
