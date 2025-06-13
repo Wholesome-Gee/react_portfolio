@@ -30,6 +30,9 @@ const ScrollBtn = styled(motion.div)<{ height: number }>`
   left: 0;
   right: 0;
   cursor: pointer;
+  p {
+    margin-bottom: 4px;
+  }
 `;
 const ToTop = styled.div`
   width: 40px;
@@ -51,40 +54,42 @@ const ToTop = styled.div`
 `;
 
 function Home() {
-  let height = window.innerHeight;
-  const [showScrollBtn, setShowScrollBtn] = useState(true);
-  const [showToTop, setShowToTop] = useState(false);
+  /* 💡state */
+  const height = window.innerHeight;
   const match = useMatch("/project/:id");
-  const { scrollY } = useScroll();
-  useMotionValueEvent(scrollY, "change", (prev) => {
-    // console.log(prev);
+  const [showScrollBtn, setShowScrollBtn] = useState(true);
+  const [showTopBtn, setShowTopBtn] = useState(false);
+  const { scrollY } = useScroll(); // scrollY는 motionValue
 
-    prev > 60 ? setShowScrollBtn(false) : setShowScrollBtn(true);
-    prev >= 300 ? setShowToTop(true) : setShowToTop(false);
-  });
-  // useMotionValueEvent(scrollY,'change',(prev)=>console.log(prev))
-  // console.log(match);
-
-  function handleClickScrollBtn() {
+  /* 💡callback */
+  function clickScrollBtn() {
     window.scroll({
       top: height,
       behavior: "smooth",
     });
   }
-  function handleClickToTop() {
+  function clickTopBtn() {
     window.scroll({
       top: 0,
       behavior: "smooth",
     });
   }
+
+  /* 💡hook etc.. */
+  useMotionValueEvent(scrollY, "change", (Y) => {
+    Y <= 300 ? setShowScrollBtn(true) : setShowScrollBtn(false);
+    Y >= 300 ? setShowTopBtn(true) : setShowTopBtn(false);
+  });
+
+  /* 💡return */
   return (
-    <div>
-      <Header></Header>
+    <>
+      <Header />
       <Background img={`${process.env.PUBLIC_URL}/images/bgImg.jpg`}></Background>
       <MainSection />
       <Introduce />
       <Projects />
-      {match ? <Project></Project> : null}
+      {match ? <Project /> : null}
       {showScrollBtn ? (
         <ScrollBtn
           initial={{ top: height - 100, opacity: 1 }}
@@ -94,18 +99,18 @@ function Home() {
           }}
           whileHover={{ opacity: 0.5, transition: { duration: 0.2 } }}
           height={height}
-          onClick={handleClickScrollBtn}
+          onClick={clickScrollBtn}
         >
-          <p style={{ marginBottom: "4px" }}>click to scroll</p>
+          <p>click to scroll</p>
           <FaAngleDoubleDown fontSize={"32px"}></FaAngleDoubleDown>
         </ScrollBtn>
       ) : null}
-      {showToTop ? (
-        <ToTop onClick={handleClickToTop}>
+      {showTopBtn ? (
+        <ToTop onClick={clickTopBtn}>
           <GrLinkTop />
         </ToTop>
       ) : null}
-    </div>
+    </>
   );
 }
 

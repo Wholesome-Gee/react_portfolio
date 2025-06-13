@@ -1,39 +1,43 @@
 import styled from "styled-components";
-import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { IMode, modeSelector } from "../atoms";
 
-const Container = styled(motion.div)`
+const Container = styled(motion.div)<IMode>`
   width: 100vw;
-  height: 80px;
+  min-width: 375px;
+  height: ${(props) => (props.mode === "desktop" ? "80px" : props.mode === "tablet" ? "70px" : "60px")};
+  display: flex;
+  align-items: center;
   position: fixed;
   top: 0;
-  font-size: 26px;
   z-index: 5;
+  font-size: ${(props) => (props.mode === "desktop" ? "26px" : props.mode === "tablet" ? "22px" : "18px")};
+  font-weight: 600;
 `;
-const Inner = styled.div`
-  width: 1200px;
+const Inner = styled.div<IMode>`
+  width: ${(props) => (props.mode === "desktop" ? "1200px" : "90%")};
   margin: 0 auto;
-  padding: 4px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
 `;
-const Column = styled.div`
+const Column = styled.div<IMode>`
   width: 20%;
   color: ${(props) => props.theme.whiteColor};
-  font-weight: 600;
   ul {
     display: flex;
     justify-content: center;
-    gap: 100px;
+    gap: ${(props) => (props.mode === "desktop" ? "100px" : props.mode === "tablet" ? "60px" : "20px")};
   }
   &:nth-child(2) {
-    width: 60%;
+    width: 40%;
   }
 `;
 
-const Logo = styled(motion.svg)`
-  width: 60px;
+const Logo = styled(motion.svg)<IMode>`
+  width: ${(props) => (props.mode === "desktop" ? "60px" : props.mode === "tablet" ? "50px" : "40px")};
 `;
 
 const logoVariant = {
@@ -62,10 +66,14 @@ const liVariant = {
 };
 
 function Header() {
-  let innerHeight = window.innerHeight;
-  const { scrollY } = useScroll();
+  /* 💡 state */
+  const innerHeight = window.innerHeight;
+  const [mode, setMode] = useRecoilState(modeSelector);
+  const { scrollY } = useScroll(); // motionValue를 반환
   const transScrollY = useTransform(scrollY, [0, 100], ["rgba(22,24,29,0)", "rgba(22,24,29,1)"]);
+  // scrollY값이 0일땐 rgba(22,24,29,0), scrollY값이 100일땐 rgba(22,24,29,1)을 반환
 
+  /* 💡 callback */
   function scrollIntroduce() {
     window.scroll({
       top: innerHeight,
@@ -78,12 +86,14 @@ function Header() {
       behavior: "smooth",
     });
   }
+
   return (
-    <Container style={{ backgroundColor: transScrollY }}>
-      <Inner>
-        <Column>
+    <Container mode={mode} style={{ backgroundColor: transScrollY }}>
+      <Inner mode={mode}>
+        <Column mode={mode}>
           <Link to="/">
             <Logo
+              mode={mode}
               variants={logoVariant}
               initial="start"
               whileHover="hover"
@@ -94,7 +104,7 @@ function Header() {
             </Logo>
           </Link>
         </Column>
-        <Column>
+        <Column mode={mode}>
           <ul>
             <motion.li
               variants={liVariant}
@@ -119,7 +129,7 @@ function Header() {
             </motion.li> */}
           </ul>
         </Column>
-        <Column></Column>
+        <Column mode={mode}></Column>
       </Inner>
     </Container>
   );

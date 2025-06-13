@@ -1,4 +1,8 @@
-import { atom } from "recoil";
+import { atom, selector } from "recoil";
+
+export interface IMode {
+  mode: string;
+}
 
 export interface IProject {
   id: string;
@@ -45,4 +49,20 @@ export const projectsState = atom<IProject[]>({
       github: "https://github.com/Wholesome-Gee/study_react-voting",
     },
   ],
+});
+
+export const mode = atom({
+  key: "mode",
+  default: "desktop",
+});
+
+export const modeSelector = selector({
+  key: "modeSelector",
+  get: ({ get }) => {
+    const userDevice = get(mode);
+    return userDevice;
+  },
+  set: ({ set }, value) => {
+    set(mode, value);
+  },
 });

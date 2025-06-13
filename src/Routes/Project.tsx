@@ -214,12 +214,11 @@ interface IProps {
 function Project() {
   const { id } = useParams();
   const project = useRecoilValue(projectsState).find((item) => item.id === id);
-  console.log(project);
   const navigate = useNavigate();
   const [slideNum, setSlideNum] = useState(1);
   const [isReverse, setIsReverse] = useState(false);
   const [isSliding, setIsSliding] = useState(false);
-
+  const maxSlideNum = project?.images.length;
   // 모달창이 띄워져있을때, 모달창 뒤의 배경화면이 스크롤되는것을 방지하는 코드
   useEffect(() => {
     document.body.style.cssText = `
@@ -238,7 +237,7 @@ function Project() {
     const autoSlide = setInterval(() => {
       if (!project) return;
       setIsReverse(false);
-      setSlideNum((prev) => (prev === project.images.length ? 1 : prev + 1));
+      setSlideNum((prev) => (prev === maxSlideNum ? 1 : prev + 1));
     }, 4000);
     return () => {
       clearInterval(autoSlide);
@@ -249,19 +248,18 @@ function Project() {
     navigate(-1);
   }
   function increaseIndex() {
-    if (isSliding) {
-      return;
-    } else {
-      setIsSliding(true);
-      setIsReverse(false);
-      setSlideNum((slideNum) => (slideNum === 6 ? 1 : slideNum + 1));
-    }
+    if (maxSlideNum === undefined) return;
+    if (isSliding) return;
+    setIsSliding(true);
+    setIsReverse(false);
+    setSlideNum((slideNum) => (slideNum === maxSlideNum ? 1 : slideNum + 1));
   }
   function decreaseIndex() {
+    if (maxSlideNum === undefined) return;
     if (isSliding) return;
     setIsSliding(true);
     setIsReverse(true);
-    setSlideNum((slideNum) => (slideNum === 1 ? 6 : slideNum - 1));
+    setSlideNum((slideNum) => (slideNum === 1 ? maxSlideNum : slideNum - 1));
   }
 
   return (
@@ -316,7 +314,7 @@ function Project() {
               </Icons>
             </Skills>
             <Detail>
-              <DetailTitle>주요기능</DetailTitle>
+              <DetailTitle>프로젝트 설명</DetailTitle>
               <DetailText>
                 {project?.options.map((option) => (
                   <Text key={option}>
