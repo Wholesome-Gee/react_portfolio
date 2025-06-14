@@ -28,7 +28,7 @@ const Slider = styled.div<IMode>`
   overflow: hidden;
   position: relative;
 `;
-const Mention = styled(motion.p)<IMode>`
+const Mention = styled(motion.div)<IMode>`
   width: 100%;
   display: flex;
   justify-content: center;

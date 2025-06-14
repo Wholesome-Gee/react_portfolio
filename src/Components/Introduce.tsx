@@ -5,9 +5,9 @@ import { IMode, modeSelector } from "../atoms";
 
 /* 💡styled-component */
 const Container = styled.div<IMode>`
-  padding: ${(props) => (props.mode === "desktop" ? "100px" : props.mode === "tablet" ? "90px" : "80px 20px")};
+  padding: ${(props) => (props.mode === "desktop" ? "100px" : props.mode === "tablet" ? "90px 40px" : "80px 20px")};
   width: 100%;
-  height: auto;
+  height: ${(props) => (props.mode === "mobile" ? "1350px" : "auto")};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -38,10 +38,11 @@ const Section = styled.div<IMode>`
   justify-content: ${(props) => (props.mode === "mobile" ? "center" : "flex-start")};
   &:first-child {
     width: 350px;
+    margin-right: ${(props) => (props.mode === "tablet" ? "16px" : "0")};
     margin-bottom: ${(props) => (props.mode === "mobile" ? "30px" : "0")};
   }
   &:last-child {
-    width: ${(props) => (props.mode === "desktop" ? "850px" : props.mode === "tablet" ? "200px" : "100%")};
+    width: ${(props) => (props.mode === "desktop" ? "850px" : props.mode === "tablet" ? "100%" : "100%")};
     flex-direction: column;
     justify-content: space-between;
   }
@@ -134,7 +135,7 @@ const Subject = styled.div`
 `;
 const SubjectTitle = styled.p<IMode>`
   height: ${(props) => (props.mode === "mobile" ? "30px" : "35px")};
-  font-size: ${(props) => (props.mode === "mobile" ? "20px" : "26px")};
+  font-size: ${(props) => (props.mode === "desktop" ? "26px" : "18px")};
   font-weight: 600;
 `;
 const TextBox = styled.div<IMode>`
@@ -143,7 +144,7 @@ const TextBox = styled.div<IMode>`
   height: 160px;
   border: 2px solid ${(props) => props.theme.textColor};
   border-radius: 8px;
-  font-size: ${(props) => (props.mode === "mobile" ? "14px" : "16px")};
+  font-size: ${(props) => (props.mode === "desktop" ? "16px" : "14px")};
   line-height: 20px;
   overflow-y: auto;
   background-color: rgba(0, 0, 0, 0.5);
@@ -157,6 +158,7 @@ const Text = styled.div<IMode>`
   }
   h1 {
     font-size: ${(props) => (props.mode === "mobile" ? "14px" : "1.1rem")};
+    font-size: ${(props) => (props.mode === "desktop" ? "1.1rem" : props.mode === "tablet" ? "16px" : "14px")};
     font-weight: 600;
     margin: 4px 0;
   }
@@ -168,7 +170,6 @@ const Text = styled.div<IMode>`
 function Introduce() {
   /* 💡state */
   const [mode, setMode] = useRecoilState(modeSelector);
-  /* 💡 */
   /* 💡JSX */
   return (
     <Container mode={mode}>

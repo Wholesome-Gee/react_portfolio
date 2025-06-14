@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { IMode, modeSelector } from "../atoms";
+import { useState } from "react";
 
 const Container = styled(motion.div)<IMode>`
   width: 100vw;
@@ -15,6 +16,7 @@ const Container = styled(motion.div)<IMode>`
   z-index: 5;
   font-size: ${(props) => (props.mode === "desktop" ? "26px" : props.mode === "tablet" ? "22px" : "18px")};
   font-weight: 600;
+  background-color: rgba(22, 24, 29, 1);
 `;
 const Inner = styled.div<IMode>`
   width: ${(props) => (props.mode === "desktop" ? "1200px" : "90%")};
@@ -67,28 +69,30 @@ const liVariant = {
 
 function Header() {
   /* 💡 state */
-  const innerHeight = window.innerHeight;
+  const [height, setHeight] = useState(window.innerHeight);
   const [mode, setMode] = useRecoilState(modeSelector);
   const { scrollY } = useScroll(); // motionValue를 반환
   const transScrollY = useTransform(scrollY, [0, 100], ["rgba(22,24,29,0)", "rgba(22,24,29,1)"]);
   // scrollY값이 0일땐 rgba(22,24,29,0), scrollY값이 100일땐 rgba(22,24,29,1)을 반환
-
   /* 💡 callback */
   function scrollIntroduce() {
     window.scroll({
-      top: innerHeight,
+      top: height,
       behavior: "smooth",
     });
   }
   function scrollProjects() {
     window.scroll({
-      top: innerHeight + 1100,
+      top: mode === "mobile" ? height + 1350 : height + 1100,
       behavior: "smooth",
     });
   }
 
   return (
-    <Container mode={mode} style={{ backgroundColor: transScrollY }}>
+    <Container
+      mode={mode}
+      // style={{ backgroundColor: transScrollY }}
+    >
       <Inner mode={mode}>
         <Column mode={mode}>
           <Link to="/">
@@ -124,9 +128,6 @@ function Header() {
             >
               Projects
             </motion.li>
-            {/* <motion.li variants={liVariant} initial="start" whileHover="hover" style={{ cursor: "pointer" }}>
-              More
-            </motion.li> */}
           </ul>
         </Column>
         <Column mode={mode}></Column>

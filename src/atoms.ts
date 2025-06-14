@@ -20,7 +20,7 @@ export const projectsState = atom<IProject[]>({
   default: [
     {
       id: "todolist",
-      title: "오늘뭐하지? todo list",
+      title: "오늘뭐하지? 'TODO LIST'",
       description: "할일 등록, 즐겨찾기, 완료, 삭제 기능이 있는 todo list",
       skills: ["tailwind", "react"],
       options: [
@@ -47,6 +47,20 @@ export const projectsState = atom<IProject[]>({
       images: [1, 2, 3, 4, 5, 6],
       domain: "https://wholesome-gee.github.io/study_react-voting",
       github: "https://github.com/Wholesome-Gee/study_react-voting",
+    },
+    {
+      id: "checklist",
+      title: "여행 체크리스트 앱",
+      description: "물품 추가, 삭제, 드래그&드롭을 구현한 여행 체크리스트",
+      skills: ["react", "styled-components", "ts", "recoil"],
+      options: [
+        "Recoil을 활용하여 컴포넌트 간 State를 효과적으로 관리",
+        "typeScript를 활용하여 프로젝트 전반적 타입안정성과 유지보수성을 향상",
+        "'react-beautiful-dnd'라이브러리를 사용하여 물품 Drag&Drop 기능 구현",
+      ],
+      images: [1, 2, 3, 4],
+      domain: "https://wholesome-gee.github.io/study_react-checklist",
+      github: "https://github.com/Wholesome-Gee/study_react-checklist",
     },
   ],
 });

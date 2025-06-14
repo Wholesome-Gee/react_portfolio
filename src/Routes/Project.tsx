@@ -2,8 +2,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { IProject, projectsState } from "../atoms";
-import { useRecoilValue } from "recoil";
+import { IMode, IProject, modeSelector, projectsState } from "../atoms";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 const Overlay = styled(motion.div)`
   width: 100vw;
@@ -14,48 +14,53 @@ const Overlay = styled(motion.div)`
   position: fixed;
   top: 0;
   right: 0;
-  z-slidenum: 10;
+  z-index: 10;
   background-color: rgba(0, 0, 0, 0.8);
 `;
-const ContentsBox = styled.div`
-  width: 1150px;
-  height: 700px;
-  padding: 40px 20px;
+const ContentsBox = styled.div<IMode>`
+  width: ${(props) => (props.mode === "mobile" ? "375px" : props.mode === "tablet" ? "760px" : "1150px")};
+  height: ${(props) => (props.mode === "mobile" ? "540px" : props.mode === "tablet" ? "800px" : "700px")};
+  padding: ${(props) =>
+    props.mode === "mobile" ? "20px 10px" : props.mode === "tablet" ? "20px 20px 115px 20px" : "40px 20px"};
   position: relative;
+  border: 4px solid ${(props) => props.theme.pointColor};
   background-color: ${(props) => props.theme.bgColor};
 `;
-const Header = styled.div`
+const Header = styled.div<IMode>`
   display: flex;
-  align-items: flex-end;
-  gap: 4px;
+  flex-direction: ${(props) => (props.mode === "desktop" ? "row" : "column")};
+  align-items: ${(props) => (props.mode === "desktop" ? "flex-end" : "center")};
+  gap: ${(props) => (props.mode === "desktop" ? "4px" : "8px")};
 `;
-const Title = styled.div`
-  font-size: 32px;
+const Title = styled.div<IMode>`
+  font-size: ${(props) => (props.mode === "mobile" ? "24px" : "32px")};
   font-weight: 600;
 `;
-const Description = styled.div`
-  font-size: 18px;
+const Description = styled.div<IMode>`
+  font-size: ${(props) => (props.mode === "mobile" ? "14px" : "18px")};
 `;
-const Contents = styled.div`
-  padding: 40px 0;
-  height: 550px;
+const Contents = styled.div<IMode>`
+  padding: ${(props) => (props.mode === "mobile" ? "20px 0" : props.mode === "tablet" ? "40px 0 60px 0" : "40px 0")};
+  height: ${(props) => (props.mode === "mobile" ? "350px" : props.mode === "tablet" ? "100%" : "550px")};
   display: flex;
-  justify-content: space-between;
+  flex-direction: ${(props) => (props.mode === "desktop" ? "row" : "column")};
+  justify-content: ${(props) => (props.mode === "tablet" ? "flex-start" : "space-between")};
 `;
-const ContentLeft = styled.div`
-  width: 710px;
+const ContentLeft = styled.div<IMode>`
+  width: ${(props) => (props.mode === "desktop" ? "710px" : "100%")};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: ${(props) => (props.mode === "tablet" ? "center" : "flex-start")};
 `;
-const Slider = styled.div`
-  width: 100%;
-  height: 100%;
+const Slider = styled.div<IMode>`
+  width: ${(props) => (props.mode === "mobile" ? "355px" : props.mode === "tablet" ? "400px" : "100%")};
+  height: ${(props) => (props.mode === "mobile" ? "180px" : props.mode === "tablet" ? "240px" : "100%")};
   border: 1px solid white;
   position: relative;
   overflow: hidden;
 `;
-const SlideImg = styled(motion.div)<{ bgImg: string }>`
+const SlideImg = styled(motion.div)<{ bgImg: string; mode: string }>`
   width: 100%;
   height: 100%;
   position: absolute;
@@ -63,8 +68,8 @@ const SlideImg = styled(motion.div)<{ bgImg: string }>`
   background-size: cover;
   background-position: center center;
 `;
-const Buttons = styled.div`
-  padding: 14px 0;
+const Buttons = styled.div<IMode>`
+  padding: ${(props) => (props.mode === "mobile" ? "8px 0" : "14px 0")};
   width: 100%;
   display: flex;
   justify-content: center;
@@ -85,52 +90,52 @@ const Buttons = styled.div`
     margin: 0 16px;
   }
 `;
-const PrevBtn = styled.button``;
-const NextBtn = styled.button``;
-const ContentRight = styled.div`
-  padding-left: 20px;
-  width: 400px;
+const PrevBtn = styled.button<IMode>``;
+const NextBtn = styled.button<IMode>``;
+const ContentRight = styled.div<IMode>`
+  padding-left: ${(props) => (props.mode === "desktop" ? "20px" : "0")};
+  width: ${(props) => (props.mode === "desktop" ? "400px" : "100%")};
   display: flex;
   flex-direction: column;
   position: relative;
 `;
-const Skills = styled.div`
-  margin-bottom: 40px;
+const Skills = styled.div<IMode>`
+  margin-bottom: ${(props) => (props.mode === "desktop" ? "40px" : "10px")};
   p {
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 16px;
   }
 `;
-const Icons = styled.div`
+const Icons = styled.div<IMode>`
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 `;
-const Icon = styled.div<{ bgImg: string }>`
-  width: 40px;
-  height: 40px;
+const Icon = styled.div<{ bgImg: string; mode: string }>`
+  width: ${(props) => (props.mode === "mobile" ? "30px" : "40px")};
+  height: ${(props) => (props.mode === "mobile" ? "30px" : "40px")};
   border-radius: 50%;
   background-image: ${(props) => `url(${props.bgImg})`};
   background-size: cover;
   background-position: center;
   background-color: ${(props) => props.theme.textColor};
 `;
-const Detail = styled.div``;
-const DetailTitle = styled.div`
+const Detail = styled.div<IMode>``;
+const DetailTitle = styled.div<IMode>`
   margin-bottom: 10px;
   font-size: 20px;
   font-weight: 600;
 `;
-const DetailText = styled.div`
-  margin-bottom: 10px;
+const DetailText = styled.div<IMode>`
+  margin-bottom: ${(props) => (props.mode === "mobile" ? "0" : "10px")};
   padding: 8px 16px;
-  height: 270px;
+  height: ${(props) => (props.mode === "desktop" ? "270px" : "120px")};
   border: 1px solid white;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: ${(props) => (props.mode === "mobile" ? "8px" : "16px")};
   overflow-y: scroll;
   &::-webkit-scrollbar {
     width: 20px;
@@ -145,20 +150,20 @@ const DetailText = styled.div`
     background: transpl; /* 스크롤바 뒷 배경 색상 */
   }
   background-color: rgba(0, 0, 0, 0);
-  p {
-    font-size: 18px;
+  span {
+    font-size: ${(props) => (props.mode === "desktop" ? "16px" : "14px")};
   }
 `;
-const Text = styled.div`
+const Text = styled.div<IMode>`
   display: flex;
   line-height: 20px;
 `;
-const TextMark = styled.span`
-  width: 30px;
+const TextMark = styled.span<IMode>`
+  width: ${(props) => (props.mode === "desktop" ? "30px" : "20px")};
   margin-right: 4px;
 `;
-const TextContent = styled.span``;
-const Links = styled.div`
+const TextContent = styled.span<IMode>``;
+const Links = styled.div<IMode>`
   margin: 0 auto;
   display: flex;
   justify-content: center;
@@ -166,8 +171,7 @@ const Links = styled.div`
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 40px;
-
+  bottom: ${(props) => (props.mode === "mobile" ? "15px" : "40px")};
   a {
     padding: 10px 0;
     width: 120px;
@@ -181,10 +185,10 @@ const Links = styled.div`
     }
   }
 `;
-const GithubLink = styled.a``;
-const SiteLink = styled.a``;
+const GithubLink = styled.a<IMode>``;
+const SiteLink = styled.a<IMode>``;
 
-const CloseBtn = styled.div`
+const CloseBtn = styled.div<IMode>`
   width: 50px;
   height: 50px;
   text-align: center;
@@ -196,14 +200,14 @@ const CloseBtn = styled.div`
 `;
 
 const slideBoxVariant = {
-  start: (isReverse: boolean) => ({
-    x: isReverse ? -710 : 710,
+  start: (custom: { isReverse: boolean; mode: string }) => ({
+    x: custom.isReverse ? (custom.mode === "mobile" ? -355 : -710) : custom.mode === "mobile" ? 355 : 710,
   }),
   end: {
     x: 0,
   },
-  exit: (isReverse: boolean) => ({
-    x: isReverse ? 710 : -710,
+  exit: (custom: { isReverse: boolean; mode: string }) => ({
+    x: custom.isReverse ? (custom.mode === "mobile" ? 355 : 710) : custom.mode === "mobile" ? -355 : -710,
   }),
 };
 
@@ -212,6 +216,7 @@ interface IProps {
 }
 
 function Project() {
+  const [mode, setMode] = useRecoilState(modeSelector);
   const { id } = useParams();
   const project = useRecoilValue(projectsState).find((item) => item.id === id);
   const navigate = useNavigate();
@@ -264,26 +269,27 @@ function Project() {
 
   return (
     <Overlay>
-      <ContentsBox>
-        <Header>
-          <Title>{project?.title}</Title>
-          <Description>({project?.description})</Description>
+      <ContentsBox mode={mode}>
+        <Header mode={mode}>
+          <Title mode={mode}>{project?.title}</Title>
+          <Description mode={mode}>({project?.description})</Description>
         </Header>
 
-        <Contents>
-          <ContentLeft>
-            <Slider>
+        <Contents mode={mode}>
+          <ContentLeft mode={mode}>
+            <Slider mode={mode}>
               <AnimatePresence
                 initial={false}
                 onExitComplete={() => {
                   setIsSliding(false);
                 }}
-                custom={isReverse}
+                custom={{ isReverse, mode }}
               >
                 {project?.images.map((item) =>
                   item === slideNum ? (
                     <SlideImg
-                      custom={isReverse}
+                      mode={mode}
+                      custom={{ isReverse, mode }}
                       variants={slideBoxVariant}
                       initial="start"
                       animate="end"
@@ -296,45 +302,51 @@ function Project() {
                 )}
               </AnimatePresence>
             </Slider>
-            <Buttons>
-              <PrevBtn onClick={decreaseIndex}>&larr;</PrevBtn>
+            <Buttons mode={mode}>
+              <PrevBtn mode={mode} onClick={decreaseIndex}>
+                &larr;
+              </PrevBtn>
               <p>
                 {slideNum}/{project?.images.length}
               </p>
-              <NextBtn onClick={increaseIndex}>&rarr;</NextBtn>
+              <NextBtn mode={mode} onClick={increaseIndex}>
+                &rarr;
+              </NextBtn>
             </Buttons>
           </ContentLeft>
-          <ContentRight>
-            <Skills>
-              <p>Skills</p>
-              <Icons>
+          <ContentRight mode={mode}>
+            <Skills mode={mode}>
+              {mode === "mobile" ? null : <p>Skills</p>}
+              <Icons mode={mode}>
                 {project?.skills.map((item) => (
-                  <Icon bgImg={`${process.env.PUBLIC_URL}/images/skills/${item}.png`} key={item}></Icon>
+                  <Icon mode={mode} bgImg={`${process.env.PUBLIC_URL}/images/skills/${item}.png`} key={item}></Icon>
                 ))}
               </Icons>
             </Skills>
-            <Detail>
-              <DetailTitle>프로젝트 설명</DetailTitle>
-              <DetailText>
+            <Detail mode={mode}>
+              {mode === "mobile" ? null : <DetailTitle mode={mode}>프로젝트 설명</DetailTitle>}
+              <DetailText mode={mode}>
                 {project?.options.map((option) => (
-                  <Text key={option}>
-                    <TextMark>✅</TextMark>
-                    <TextContent>{option}</TextContent>
+                  <Text mode={mode} key={option}>
+                    <TextMark mode={mode}>✅</TextMark>
+                    <TextContent mode={mode}>{option}</TextContent>
                   </Text>
                 ))}
               </DetailText>
             </Detail>
           </ContentRight>
-          <Links>
-            <GithubLink href={project?.github} target="blank">
+          <Links mode={mode}>
+            <GithubLink mode={mode} href={project?.github} target="blank">
               Github ↗
             </GithubLink>
-            <SiteLink href={project?.domain} target="blank">
+            <SiteLink mode={mode} href={project?.domain} target="blank">
               Project ↗
             </SiteLink>
           </Links>
         </Contents>
-        <CloseBtn onClick={moveBack}>×</CloseBtn>
+        <CloseBtn mode={mode} onClick={moveBack}>
+          ×
+        </CloseBtn>
       </ContentsBox>
     </Overlay>
   );

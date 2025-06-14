@@ -26,7 +26,6 @@ const ScrollBtn = styled(motion.div)<{ height: number }>`
   padding: 8px 0;
   text-align: center;
   position: absolute;
-  top: ${(props) => props.height - 100}px;
   left: 0;
   right: 0;
   cursor: pointer;
@@ -55,7 +54,7 @@ const ToTop = styled.div`
 
 function Home() {
   /* 💡state */
-  const height = window.innerHeight;
+  const [height, setHeight] = useState(window.innerHeight);
   const match = useMatch("/project/:id");
   const [showScrollBtn, setShowScrollBtn] = useState(true);
   const [showTopBtn, setShowTopBtn] = useState(false);
@@ -77,7 +76,7 @@ function Home() {
 
   /* 💡hook etc.. */
   useMotionValueEvent(scrollY, "change", (Y) => {
-    Y <= 300 ? setShowScrollBtn(true) : setShowScrollBtn(false);
+    Y < 300 ? setShowScrollBtn(true) : setShowScrollBtn(false);
     Y >= 300 ? setShowTopBtn(true) : setShowTopBtn(false);
   });
 
